@@ -150,7 +150,6 @@ public class HiloServidor implements Runnable {
 					
 				//Caso para salir del programa.	
 				case "5":
-					String respuesta5 = eB.readLine();
 					System.out.println("Programa finalizado");
 					salida.println("Servidor finaliza el programa también");
 					continuar = false;

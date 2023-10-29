@@ -65,8 +65,6 @@ public class Cliente {
 				texto = sc.nextLine();				
 	
 				if(texto.equals("5")) {
-					//envío elección
-					salida.println(texto);
 					System.out.println( "Has finalizado el programa" + "\n");
 					
 					continuar = false;
