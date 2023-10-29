@@ -5,24 +5,45 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Clase HiloServidor
+ * 
+ * Esta clase inicializa los hilos creados por el servidor, para abrir un socket por cada hilo, que se conectará
+ * con cada usuario que realice una petición.
+ */
+
+
 public class HiloServidor implements Runnable {
 	
 	private Thread hilo;
 	private Socket socketAlCliente;
 	
-	//List<Peliculas> listaDePeliculas = Servidor.obtenerPeliculas();
+	//List de la clase Películas.
 	private static List<Peliculas> peliculas = new ArrayList<>();
 	
 	private static void addPeliculas() {
-		peliculas.add(new Peliculas(1, "Origen", "Christopher Nolan", 10));
-		peliculas.add(new Peliculas(2, "El código DaVinci", "Ron Howard", 9));
-		peliculas.add(new Peliculas(3, "Harry Potter y el prisionero de Azkaban", "Alfonso Cuarón", 8));
-		peliculas.add(new Peliculas(4, "La llegada", "Denis Villeneuve", 7));
-		peliculas.add(new Peliculas(5, "Star Wars: Episodio IV - Una nueva esperanza", "George Lucas", 7));
-		peliculas.add(new Peliculas(6, "Interstellar", "Christopher Nolan", 7));
+		peliculas.add(new Peliculas(1, "Origen", "Christopher Nolan", "10"));
+		peliculas.add(new Peliculas(2, "El código DaVinci", "Ron Howard", "10"));
+		peliculas.add(new Peliculas(3, "Harry Potter y el prisionero de Azkaban", "Alfonso Cuarón", "10"));
+		peliculas.add(new Peliculas(4, "La llegada", "Denis Villeneuve", "10"));
+		peliculas.add(new Peliculas(5, "Star Wars: Episodio IV - Una nueva esperanza", "George Lucas", "10"));
+		peliculas.add(new Peliculas(6, "Interstellar", "Christopher Nolan", "10"));
 		
 	}
 	
+	//Método para añadir una película por parte del cliente.
+	public void addPeliculaCliente(String datosPelicula) {
+		String[] datos = datosPelicula.split("|");
+		int id = Integer.parseInt(datos[0]);
+		String nombre = datos[1];
+		String director = datos[2];
+		String precio = datos[3];
+		
+		Peliculas nuevaPelicula = new Peliculas(id, nombre, director, precio);
+		peliculas.add(nuevaPelicula);
+	}
+	
+	//Conexión del hilo con el servidor.
 	public HiloServidor (Socket socketAlCliente) {
 		hilo = new Thread(this);
 		this.socketAlCliente = socketAlCliente;
@@ -31,7 +52,7 @@ public class HiloServidor implements Runnable {
 	
 	
 	
-	
+	//Método run del hilo con la lógica del lado del servidor.
 	@Override
 	public void run() {
 		
@@ -49,25 +70,25 @@ public class HiloServidor implements Runnable {
 			entrada = new InputStreamReader(socketAlCliente.getInputStream());
 			eB = new BufferedReader(entrada);
 			
-			//Cçodigo principal para permitir interacción y resolver según las peticiones
+			//Codigo principal para permitir interacción y resolver según las peticiones
 			String eleccion = "";
 			boolean continuar = true;
-			
-			
-			
+								
 			while(continuar) {
 				eleccion = eB.readLine();
 				
-				//AQUÍ igualo al menú de opciones del Cliente.
+				//Comparación y equiparación con el menú de opciones del Cliente.
 				switch(eleccion) {
-					
-				case "1": //RECIBIR LA INFO DEL CLIENTE MEDIANTE iNPUTsTREAM ETC.
-					//si elige 1->envío el menú de películas.
+				
+				//Caso para consultar películas por ID;
+				case "1": 
+					//envío el menú de películas.
 					salida.println(peliculas);
 					
-					//recibo elección entre ellas
+					//recibo elección del cliente
 					String respuesta1 = eB.readLine();
 					
+					//recorro una a una y envío al Cliente las opciones que coinciden con su búsqueda
 					for(Peliculas pelicula : peliculas ) {
 						
 						if(pelicula.getID() == Integer.parseInt(respuesta1)) {
@@ -76,31 +97,13 @@ public class HiloServidor implements Runnable {
 					}
 					break;	
 					
-					/*
-					 * if(eleccion.equals("01")) {
-						System.out.println(Servidor.obtenerPeliculas().get(0));
-					}else if(eleccion.equals("02")) {
-						System.out.println(Servidor.obtenerPeliculas().get(1));
-					}else if(eleccion.equals("03")) {
-						System.out.println(Servidor.obtenerPeliculas().get(2));
-					}else if(eleccion.equals("04")) {
-						System.out.println(Servidor.obtenerPeliculas().get(3));
-					}else if(eleccion.equals("05")) {
-						System.out.println(Servidor.obtenerPeliculas().get(4));
-					}
-					break;
-					 */
-					
+				//Caso para consultar películas por Título;						
 				case "2": 
-					//si elige 1->envío el menú de películas.
+					
 					salida.println(peliculas);
 						
-						//salida.println(Servidor.obtenerPeliculas());
-					
-					//recibo elección entre ellas
 					String respuesta2 = eB.readLine();
-					
-										
+											
 					for(Peliculas pelicula : peliculas ) {
 													
 						if(pelicula.getTitulo().toLowerCase().contains(respuesta2.toLowerCase())) {
@@ -108,24 +111,8 @@ public class HiloServidor implements Runnable {
 						}
 					}
 					break;
-						/*
-						 * if(eleccion.trim().equalsIgnoreCase("Origen")) {
-									System.out.println(Servidor.obtenerPeliculas().get(0));
-						}
-						}else if(eleccion.toLowerCase().contains("El código DaVinci".toLowerCase())) {
-							System.out.println(Servidor.obtenerPeliculas().get(1));
-						}else if(eleccion.toLowerCase().contains("Harry Potter y el prisionero de Azkaban".toLowerCase())) {
-							System.out.println(Servidor.obtenerPeliculas().get(2));
-						}else if(eleccion.toLowerCase().contains("La llegada".toLowerCase())) {
-							System.out.println(Servidor.obtenerPeliculas().get(3));
-						}else if(eleccion.toLowerCase().contains("Star Wars: Episodio IV - Una nueva esperanza".toLowerCase())) {
-							System.out.println(Servidor.obtenerPeliculas().get(4));
-						}
-						break;
-						 */
-						//si elige 1->envío el menú de películas.
-					
-					
+								
+				//Requerimiento 2: Caso para consultar películas por director;			
 				case "3":
 					/*
 					 * for(Peliculas pelicula: peliculas) {
@@ -136,26 +123,31 @@ public class HiloServidor implements Runnable {
 										
 					//recibo elección entre ellas
 					String respuesta3 = eB.readLine();
-					
-					for(Peliculas pelicula : peliculas ) {
-						
-						if(pelicula.getDirector().toLowerCase().contains(respuesta3.toLowerCase())) {
-								salida.println(pelicula);
+					//**Envío múltiples elecciones con un delimitador.
+					StringBuilder acumulador = new StringBuilder();
+					for(Peliculas pelicula : peliculas){
+						if(pelicula.getDirector().toLowerCase().contains(respuesta3.toLowerCase())){
+							acumulador.append(pelicula.toString()).append("|");
 						}
 					}
-					//PROBL
+					salida.println(acumulador.toString());
 					
 					break;	
+					
+				//Requerimiento 3: Caso para que el usuario pueda añadir una película a la BBDD.
 				case "4":
-					//si elige 1->envío el menú de películas.
+					
 					salida.println(peliculas);
 										
-					//recibo elección entre ellas
-					eleccion = eB.readLine();
 					
+					String datosPelicula = eB.readLine();
+					addPeliculaCliente(datosPelicula);
 					
-					break;	
+					salida.println(datosPelicula);
 								
+					break;	
+					
+				//Caso para salir del programa.	
 				case "5":
 					System.out.println("Programa finalizado");
 					salida.println("Servidor finaliza el programa también");
@@ -164,23 +156,16 @@ public class HiloServidor implements Runnable {
 					
 				}
 				}	
-			//Se cierra el socket
-			socketAlCliente.close();		
+		//Se cierra el socket
+		socketAlCliente.close();	
 			
+		//Establecimientode las excepciones en el catch.	
 		}  catch (IOException e) {
 			System.err.println("HiloContadorLetras: Error de entrada/salida");
 			e.printStackTrace();
 		} catch (Exception e) {
 			System.err.println("HiloContadorLetras: Error");
 			e.printStackTrace();
-		}
-		
-		//REQUERIMIENTO 3 SON HILOS SINCRONIZADOS??????
-		
-		
-		
-		
+		}		
 	}
-	
-
 }

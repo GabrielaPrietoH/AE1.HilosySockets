@@ -2,13 +2,18 @@ package packageServidor;
 
 import java.util.Objects;
 
+/*
+ * Clase Películas
+ * 
+ * Esta clase permite interactuar con el catálogo de películas que almacena el servidor,
+ * mediante sus atributos y métodos.
+ */
 public class Peliculas {
 	
 	private int id;
-	private double precio;
-	private String titulo, director;
+	private String titulo, director, precio;
 	
-	public Peliculas(int id, String titulo, String director, double precio) {
+	public Peliculas(int id, String titulo, String director, String precio) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
@@ -25,11 +30,11 @@ public class Peliculas {
 		this.id = iD;
 	}
 
-	public double getPrecio() {
+	public String getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(double precio) {
+	public void setPrecio(String precio) {
 		this.precio = precio;
 	}
 

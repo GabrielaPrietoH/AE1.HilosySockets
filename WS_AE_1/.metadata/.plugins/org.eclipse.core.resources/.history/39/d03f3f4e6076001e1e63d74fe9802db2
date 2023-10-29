@@ -1,0 +1,162 @@
+package packageServidor;
+
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HiloServidor implements Runnable {
+	
+	private Thread hilo;
+	private Socket socketAlCliente;
+	
+	//List de la clase Películas.
+	private static List<Peliculas> peliculas = new ArrayList<>();
+	
+	private static void addPeliculas() {
+		peliculas.add(new Peliculas(1, "Origen", "Christopher Nolan", "10"));
+		peliculas.add(new Peliculas(2, "El código DaVinci", "Ron Howard", "10"));
+		peliculas.add(new Peliculas(3, "Harry Potter y el prisionero de Azkaban", "Alfonso Cuarón", "10"));
+		peliculas.add(new Peliculas(4, "La llegada", "Denis Villeneuve", "10"));
+		peliculas.add(new Peliculas(5, "Star Wars: Episodio IV - Una nueva esperanza", "George Lucas", "10"));
+		peliculas.add(new Peliculas(6, "Interstellar", "Christopher Nolan", "10"));
+		
+	}
+	
+	//Método para añadir una película por parte del cliente.
+	public void addPeliculaCliente(String datosPelicula) {
+		String[] datos = datosPelicula.split("|");
+		int id = Integer.parseInt(datos[0]);
+		String nombre = datos[1];
+		String director = datos[2];
+		String precio = datos[3];
+		
+		Peliculas nuevaPelicula = new Peliculas(id, nombre, director, precio);
+		peliculas.add(nuevaPelicula);
+	}
+	
+	//Conexión del hilo con el servidor.
+	public HiloServidor (Socket socketAlCliente) {
+		hilo = new Thread(this);
+		this.socketAlCliente = socketAlCliente;
+		hilo.start();
+	}
+	
+	
+	
+	//Método run del hilo con la lógica del lado del servidor.
+	@Override
+	public void run() {
+		
+		System.out.println("Estableciendo comunicación con " + hilo.getName());
+		PrintStream salida = null;
+		InputStreamReader entrada = null;
+		BufferedReader eB = null;
+		
+		addPeliculas();
+		
+		
+		try {
+			
+			salida = new PrintStream(socketAlCliente.getOutputStream());
+			entrada = new InputStreamReader(socketAlCliente.getInputStream());
+			eB = new BufferedReader(entrada);
+			
+			//Codigo principal para permitir interacción y resolver según las peticiones
+			String eleccion = "";
+			boolean continuar = true;
+								
+			while(continuar) {
+				eleccion = eB.readLine();
+				
+				//Comparación y equiparación con el menú de opciones del Cliente.
+				switch(eleccion) {
+				
+				//Caso para consultar películas por ID;
+				case "1": 
+					//envío el menú de películas.
+					salida.println(peliculas);
+					
+					//recibo elección del cliente
+					String respuesta1 = eB.readLine();
+					
+					//recorro una a una y envío al Cliente las opciones que coinciden con su búsqueda
+					for(Peliculas pelicula : peliculas ) {
+						
+						if(pelicula.getID() == Integer.parseInt(respuesta1)) {
+								salida.println(pelicula);
+						}
+					}
+					break;	
+					
+				//Caso para consultar películas por Título;						
+				case "2": 
+					
+					salida.println(peliculas);
+						
+					String respuesta2 = eB.readLine();
+											
+					for(Peliculas pelicula : peliculas ) {
+													
+						if(pelicula.getTitulo().toLowerCase().contains(respuesta2.toLowerCase())) {
+								salida.println(pelicula);
+						}
+					}
+					break;
+								
+				//Requerimiento 2: Caso para consultar películas por director;			
+				case "3":
+					/*
+					 * for(Peliculas pelicula: peliculas) {
+						salida.println(pelicula.getDirector());
+					}
+					 */
+					salida.println(peliculas);
+										
+					//recibo elección entre ellas
+					String respuesta3 = eB.readLine();
+					//**Envío múltiples elecciones con un delimitador.
+					StringBuilder acumulador = new StringBuilder();
+					for(Peliculas pelicula : peliculas){
+						if(pelicula.getDirector().toLowerCase().contains(respuesta3.toLowerCase())){
+							acumulador.append(pelicula.toString()).append("|");
+						}
+					}
+					salida.println(acumulador.toString());
+					
+					break;	
+				//Requerimiento 3: Caso para que el usuario pueda añadir una película a la BBDD.
+				case "4":
+					
+					salida.println(peliculas);
+										
+					
+					String datosPelicula = eB.readLine();
+					addPeliculaCliente(datosPelicula);
+					
+					salida.println(datosPelicula);
+								
+					break;	
+					
+				//Caso para salir del programa.	
+				case "5":
+					System.out.println("Programa finalizado");
+					salida.println("Servidor finaliza el programa también");
+					continuar = false;
+					break;	
+					
+				}
+				}	
+			//Se cierra el socket
+			socketAlCliente.close();	
+			
+		//Establecimientode las excepciones en el catch.	
+		}  catch (IOException e) {
+			System.err.println("HiloContadorLetras: Error de entrada/salida");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("HiloContadorLetras: Error");
+			e.printStackTrace();
+		}		
+	}
+}
