@@ -1,0 +1,124 @@
+package packageCliente;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.*;
+import java.util.Scanner;
+
+
+/*
+ * JAVADOC
+ * 
+ * */
+public class Cliente {
+	
+	public static final int PUERTO = 2018;
+	public static final String IP_SERVER = "localhost";
+
+	public static void main(String[] args) {
+		
+		System.out.println("APP CLIENTE");
+		
+		//Se establece la dirección de la conexión con el servidor.
+		InetSocketAddress direccionServidor = new InetSocketAddress (IP_SERVER, PUERTO);
+		
+		/*
+		 * Try and Catch. No se introduce aquí el socket como parámetro, ya que 
+		 * se pretende qye el cliente se comunique de forma continua con el servidor.
+		 * */
+		
+		try (Scanner sc = new Scanner(System.in);) {
+			
+			System.out.println("C: esperando a que el servidor acepte");
+			
+			Socket socketAlServidor = new Socket();
+			socketAlServidor.connect(direccionServidor);
+			
+		System.out.println("C: CONEXIÓN ESTABLECIDA" + IP_SERVER + PUERTO);
+		
+		//Se inicia el Strem de entrada de datos desde el servidor
+		InputStreamReader entrada = new InputStreamReader(socketAlServidor.getInputStream());
+		BufferedReader eB = new BufferedReader(entrada);
+		
+		//Se inicia el Strem de salida de datos hacia el servidor
+		PrintStream salida = new PrintStream(socketAlServidor.getOutputStream());
+		
+		String texto = "";
+		boolean continuar = true;
+		
+		 do {
+			System.out.println("Seleccione una de las siguientes opciones:");
+			System.out.println("1. Consultar una película por ID");
+			System.out.println("2. Consultar una película por título");
+			System.out.println("3. Salir de la aplicación");
+			
+			texto = sc.nextLine();				
+			//String eleccion = Integer.toString(numEleccion);
+			
+			//1.print-envío al servidor la elección del cliente
+			//2.el servidor tendrá un menú que ahora dieño, para que según elija el cliente
+			//yo le enseñe diferentes menús, para cada tipo de consulta.
+			//3.readLine- recibo el menú del S, para que el cliente vuelv a a elegir
+			//según quiera hacrer la consulta y lo pinto por pantall
+			//4.
+			
+			if(texto.equals("3")) {
+				System.out.println("Has finalizado el programa");
+				continuar = false;
+			}else if(texto.equals("1")) {
+				//envío elección
+				salida.println(texto);
+				//recibo elección
+				String respuesta = eB.readLine();
+				System.out.println(respuesta);
+				
+				//pinto nuevo menú para que elija
+				System.out.println("Elige entre los siguientes ID de películas para ver su ficha técncia: 01, 02, 03, 04 o 05.");
+				texto = sc.nextLine();
+				salida.println(texto);
+				
+				//pinto la película elegida.
+				System.out.println(respuesta = eB.readLine());
+					
+			}else if (texto.equals("2")) {
+				//envío elección
+				salida.println(texto);
+				//recibo elección
+				String respuesta = eB.readLine();
+				System.out.println(respuesta);
+				
+				//pinto nuevo menú para que elija
+				System.out.println("Escribe el título de la película que eliges entre el lsitado que ves en pantalla");
+				texto = sc.nextLine();
+				salida.println(texto);
+				
+				//pinto la película elegida.
+				System.out.println(respuesta = eB.readLine());
+					
+			}
+			
+			
+			
+		}while(continuar);
+		
+		//Cerramos la conexion
+		socketAlServidor.close();
+		
+			
+		} catch (UnknownHostException e) {
+			System.err.println("CLIENTE: No encuentro el servidor en la direcci�n" + IP_SERVER);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("CLIENTE: Error de entrada/salida");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("CLIENTE: Error -> " + e);
+			e.printStackTrace();
+		}
+		
+
+	}
+
+}

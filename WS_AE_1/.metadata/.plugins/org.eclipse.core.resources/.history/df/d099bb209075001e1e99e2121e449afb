@@ -1,0 +1,66 @@
+package packageServidor;
+
+import java.io.*;
+import java.net.Socket;
+
+public class HiloServidor implements Runnable {
+	
+	private Thread hilo;
+	private Socket socketAlCliente;
+	
+	
+	
+	public HiloServidor (Socket socketAlCliente) {
+		hilo = new Thread(this);
+		this.socketAlCliente = socketAlCliente;
+		hilo.start();
+	}
+	
+	
+	@Override
+	public void run() {
+		
+		System.out.println("Estableciendo comunicación con " + hilo.getName());
+		PrintStream salida = null;
+		InputStreamReader entrada = null;
+		BufferedReader eB = null;
+		
+		
+		try {
+			
+			salida = new PrintStream(socketAlCliente.getOutputStream());
+			entrada = new InputStreamReader(socketAlCliente.getInputStream());
+			eB = new BufferedReader(entrada);
+			
+			//Cçodigo principal para permitir interacción y resolver según las peticiones
+			String eleccion = "";
+			boolean continuar = true;
+			
+			while(continuar) {
+				eleccion = eB.readLine();
+				
+				//AQUÍ igualo al menú de opciones del Cliente.
+				switch(eleccion) {
+					
+				case 1: //RECIBIR LA INFO DEL CLIENTE MEDIANTE iNPUTsTREAM ETC.
+					
+					
+					
+				}
+				
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		//REQUERIMIENTO 3 SON HILOS SINCRONIZADOS??????
+		
+		
+		
+		
+	}
+	
+
+}

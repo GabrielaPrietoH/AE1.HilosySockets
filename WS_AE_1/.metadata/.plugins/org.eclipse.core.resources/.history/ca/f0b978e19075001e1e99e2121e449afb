@@ -1,0 +1,84 @@
+package packageCliente;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.*;
+import java.util.Scanner;
+
+
+/*
+ * JAVADOC
+ * 
+ * */
+public class Cliente {
+	
+	public static final int PUERTO = 2018;
+	public static final String IP_SERVER = "localhost";
+
+	public static void main(String[] args) {
+		
+		System.out.println("APP CLIENTE");
+		
+		//Se establece la dirección de la conexión con el servidor.
+		InetSocketAddress direccionServidor = new InetSocketAddress (IP_SERVER, PUERTO);
+		
+		/*
+		 * Try and Catch. No se introduce aquí el socket como parámetro, ya que 
+		 * se pretende qye el cliente se comunique de forma continua con el servidor.
+		 * */
+		
+		try (Scanner leer = new Scanner(System.in);) {
+			
+			System.out.println("C: esperando a que el servidor acepte");
+			
+			Socket socketAlServidor = new Socket();
+			socketAlServidor.connect(direccionServidor);
+			
+		System.out.println("C: CONEXIÓN ESTABLECIDA" + IP_SERVER + PUERTO);
+		
+		//Se inicia el Strem de entrada de datos desde el servidor
+		InputStreamReader entrada = new InputStreamReader(socketAlServidor.getInputStream());
+		BufferedReader bR = new BufferedReader(entrada);
+		
+		//Se inicia el Strem de salida de datos hacia el servidor
+		PrintStream salida = new PrintStream(socketAlServidor.getOutputStream());
+		
+		String texto = "";
+		boolean continuar = true;
+		
+		while(continuar) {
+			System.out.println("Seleccione una de las siguientes opciones:");
+			System.out.println("1. Consultar una película por ID");
+			System.out.println("2. Consultar una película por título");
+			System.out.println("3. Salir de la aplicación");
+			
+			int numEleccion = leer.nextInt();				
+			//String eleccion = Integer.toString(numEleccion);
+			
+			if(numEleccion == 3) {
+				continuar = false;
+			}else if(numEleccion == 1) {
+				//enviar la info al servidor mediante el print etc.
+					
+			}else if (numEleccion == 2) {
+					
+			}
+		}
+			
+			
+		
+		
+		
+		
+		
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+
+	}
+
+}

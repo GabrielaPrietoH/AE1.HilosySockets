@@ -1,0 +1,11 @@
+package peliculas.dao;
+
+
+
+public interface PeliculasDao {
+	
+	//consultar peli por id, por titulo y salir
+	Peliculas buscarId (int id);
+	Peliculas buscarTitulo (String titulo);
+
+}

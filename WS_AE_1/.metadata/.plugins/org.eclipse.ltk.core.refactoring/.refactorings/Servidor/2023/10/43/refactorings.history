@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move package &apos;peliculas.dao&apos; to &apos;na/src&apos;&#x0D;&#x0A;- Original project: &apos;Servidor&apos;&#x0D;&#x0A;- Destination element: &apos;na/src&apos;&#x0D;&#x0A;- Original element: &apos;Servidor/src/peliculas.dao&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move package" destination="=na/src" element1="/src&lt;peliculas.dao" flags="589830" fragments="1" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.movePackages" stamp="1698504981354" version="1.0"/>
+</session>

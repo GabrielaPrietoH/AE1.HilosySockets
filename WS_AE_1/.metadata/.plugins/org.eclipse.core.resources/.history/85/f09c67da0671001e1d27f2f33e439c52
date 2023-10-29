@@ -1,0 +1,5 @@
+package peliculas.dao;
+
+public interface PeliculasDao {
+
+}

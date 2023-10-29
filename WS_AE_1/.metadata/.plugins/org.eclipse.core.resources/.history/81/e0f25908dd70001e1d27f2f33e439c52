@@ -1,0 +1,30 @@
+package packageServidor;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
+public class Servidor {
+	
+	public static final int PUERTO = 2018;
+
+	public static void main(String[] args) {
+		
+		
+		try(ServerSocket servidor = new ServerSocket()){
+			
+
+			InetSocketAddress direccion = new InetSocketAddress(PUERTO);
+			servidor.bind(direccion);
+			
+			
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+}
