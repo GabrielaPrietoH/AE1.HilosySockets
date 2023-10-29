@@ -144,7 +144,7 @@ public class HiloServidor implements Runnable {
 					addPeliculaCliente(datosPelicula);
 					
 					salida.println(datosPelicula);
-					
+					salida.println(datosPelicula);
 								
 					break;	
 					

@@ -33,7 +33,7 @@ public class HiloServidor implements Runnable {
 	
 	//Método para añadir una película por parte del cliente.
 	public void addPeliculaCliente(String datosPelicula) {
-		String[] datos = datosPelicula.split("\\|");
+		String[] datos = datosPelicula.split("|");
 		int id = Integer.parseInt(datos[0]);
 		String nombre = datos[1];
 		String director = datos[2];
@@ -144,7 +144,6 @@ public class HiloServidor implements Runnable {
 					addPeliculaCliente(datosPelicula);
 					
 					salida.println(datosPelicula);
-					
 								
 					break;	
 					
